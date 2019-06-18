@@ -387,6 +387,9 @@ final class MediaPlayerScrubbingNode: ASDisplayNode {
                             if let statusValue = strongSelf.statusValue, let scrubbingBeginTimestamp = strongSelf.scrubbingBeginTimestamp, Double(0.0).isLess(than: statusValue.duration) {
                                 strongSelf.scrubbingTimestampValue = max(0.0, min(statusValue.duration, scrubbingBeginTimestamp + statusValue.duration * Double(addedFraction)))
                                 strongSelf._scrubbingTimestamp.set(.single(strongSelf.scrubbingTimestampValue))
+                                if let scrubbingTimestampValue = strongSelf.scrubbingTimestampValue {
+                                    strongSelf.seek?(scrubbingTimestampValue)
+                                }
                                 strongSelf.updateProgressAnimations()
                             }
                         }
@@ -394,10 +397,9 @@ final class MediaPlayerScrubbingNode: ASDisplayNode {
                     handleNodeContainer.endScrubbing = { [weak self] apply in
                         if let strongSelf = self {
                             strongSelf.scrubbingBeginTimestamp = nil
-                            let scrubbingTimestampValue = strongSelf.scrubbingTimestampValue
                             strongSelf.scrubbingTimestampValue = nil
                             strongSelf._scrubbingTimestamp.set(.single(nil))
-                            if let scrubbingTimestampValue = scrubbingTimestampValue, apply {
+                            if apply {
                                 if let statusValue = strongSelf.statusValue {
                                     switch statusValue.status {
                                         case .buffering:
@@ -406,7 +408,6 @@ final class MediaPlayerScrubbingNode: ASDisplayNode {
                                             strongSelf.ignoreSeekId = statusValue.seekId
                                     }
                                 }
-                                strongSelf.seek?(scrubbingTimestampValue)
                             }
                             strongSelf.updateProgressAnimations()
                         }
