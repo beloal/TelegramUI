@@ -160,7 +160,8 @@ final class ChatMediaInputStickerPane: ChatMediaInputPane {
     }
     
     func itemAt(point: CGPoint) -> (ASDisplayNode, StickerPackItem)? {
-        if let itemNode = self.gridNode.itemNodeAtPoint(self.view.convert(point, to: self.gridNode.view)) as? ChatMediaInputStickerGridItemNode, let stickerPackItem = itemNode.stickerPackItem {
+        let p = self.view.convert(point, to: self.gridNode.view)
+        if let itemNode = self.gridNode.itemNodeAtPoint(p) as? ChatMediaInputStickerGridItemNode, itemNode.isTouchValidAtPoint(self.view.convert(point, to: itemNode.view)), let stickerPackItem = itemNode.stickerPackItem {
             return (itemNode, stickerPackItem)
         }
         return nil

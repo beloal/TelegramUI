@@ -164,6 +164,7 @@ final class ChatMediaInputStickerGridItemNode: GridItemNode {
     private var currentState: (Account, StickerPackItem, CGSize)?
     private var currentSize: CGSize?
     private let imageNode: TransformImageNode
+    private var touchFrame: CGRect?
     
     private let stickerFetchedDisposable = MetaDisposable()
     
@@ -224,6 +225,7 @@ final class ChatMediaInputStickerGridItemNode: GridItemNode {
                 let imageSize = mediaDimensions.aspectFitted(boundingSize)
                 self.imageNode.asyncLayout()(TransformImageArguments(corners: ImageCorners(), imageSize: imageSize, boundingSize: imageSize, intrinsicInsets: UIEdgeInsets()))()
                 self.imageNode.frame = CGRect(origin: CGPoint(x: floor((size.width - imageSize.width) / 2.0), y: (size.height - imageSize.height) / 2.0), size: imageSize)
+              self.touchFrame = CGRect(origin: CGPoint(x: floor((size.width - boundingSize.width) / 2.0), y: (size.height - boundingSize.height) / 2.0), size: boundingSize)
             }
         }
     }
@@ -263,4 +265,8 @@ final class ChatMediaInputStickerGridItemNode: GridItemNode {
             }
         }
     }
+
+  func isTouchValidAtPoint(_ p: CGPoint) -> Bool {
+    return touchFrame?.contains(p) ?? true
+  }
 }
